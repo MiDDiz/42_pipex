@@ -1,0 +1,6 @@
+[submodule "libs/srclibs/42_libft"]
+	path = libs/srclibs/42_libft
+	url = https://github.com/MiDDiz/42_libft.git
+[submodule "libs/srclibs/ft_printf"]
+	path = libs/srclibs/ft_printf
+	url = https://github.com/MiDDiz/ft_printf.git
