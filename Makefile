@@ -3,9 +3,9 @@ NAME = test
 COMPILER 	= clang
 FLAGS		= -Wall -Werror -Wextra
 LIBRARY		= -L./libs -lft -lftprintf
-SOURCE		= src/main.c
+SOURCE		= src/main.c src/arg_handler.c src/file_handler.c
 
-$(NAME):
+$(NAME): $(SOURCE)
 	$(COMPILER) $(FLAGS) $(SOURCE) $(LIBRARY) -o $(NAME)
 
 all: $(NAME)
