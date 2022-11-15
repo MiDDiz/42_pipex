@@ -1,4 +1,4 @@
-NAME = test
+NAME = pipex
 
 COMPILER 	= clang
 FLAGS		= -Wall -Werror -Wextra

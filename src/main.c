@@ -6,7 +6,7 @@
 /*   By: jnaftana <jnaftana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:24:01 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/11/15 12:42:05 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/11/15 13:20:59 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ int input_program(pipexhandler_t *pipexhandler, char *envp[], int *pipes)
 	close(STDOUT_FILENO);		// Set output to input pipe
 	dup(pipes[1]);
 	close(pipes[1]);		// close duplicated fd for pipe input;
-	execve(pipexhandler->program1->argv[0], pipexhandler->program1->argv, envp);
-	perror(pipexhandler->program1->argv[0]);	// If execve returns -> perror: command executed error
+	execve(pipexhandler->program1->path, pipexhandler->program1->argv, envp);
+	perror(pipexhandler->program1->path);	// If execve returns -> perror: command executed error
 	return (0);
 }
 
@@ -66,9 +66,20 @@ int output_program(pipexhandler_t *pipexhandler, char *envp[], int *pipes)
 	close(STDOUT_FILENO);	// Assign output to file output
 	dup(out_fd);
 	close(out_fd);
-	execve(pipexhandler->program2->argv[0], pipexhandler->program2->argv, envp);
-	perror(pipexhandler->program2->argv[0]);
+	execve(pipexhandler->program2->path, pipexhandler->program2->argv, envp);
+	perror(pipexhandler->program2->path);
 	return (0);
+}
+
+void cleanup(pipexhandler_t *pipexhandler)
+{
+	free(pipexhandler->program1->path);
+	free(pipexhandler->program2->path);
+	free(pipexhandler->program1->argv);
+	free(pipexhandler->program2->argv);
+	free(pipexhandler->program1);
+	free(pipexhandler->program2);
+	free(pipexhandler);
 }
 
 int start_execution(pipexhandler_t *pipexhandler, char *envp[])
@@ -116,7 +127,7 @@ int main(int argc, char *argv[], char *envp[])
 	pipexhandler_t *pipexhandler;
 	// File descriptors for out-in files
 	// Check for good arguments. Fill pseudoglobal handler.
-	if (parse_args(argc, argv, &pipexhandler) < 0)
+	if (parse_args(argc, argv, &pipexhandler, envp) < 0)
 	{
 		perror("Error while parsing arguments");
 		
@@ -129,5 +140,6 @@ int main(int argc, char *argv[], char *envp[])
 		return (-2);
 	}
 	start_execution(pipexhandler, envp);
+	cleanup(pipexhandler);
 	return (0);
 }

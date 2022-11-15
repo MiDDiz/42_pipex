@@ -6,7 +6,7 @@
 /*   By: jnaftana <jnaftana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:24:13 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/11/14 13:09:00 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/11/15 12:48:35 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct pipexhandler_s
 } pipexhandler_t;
 
 /* Arg handler */
-int	parse_args(int argc, char* argv[], pipexhandler_t **pipexhandler);
+int	parse_args(int argc, char* argv[], pipexhandler_t **p_hand, char *envp[]);
 
 /*File handlers*/
 int	open_outputf(char *path);
