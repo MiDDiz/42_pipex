@@ -6,7 +6,7 @@
 /*   By: jnaftana <jnaftana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:23:43 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/11/15 13:16:23 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/11/15 13:41:26 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ char	*search_from_env(char *cmd, char **splitted_path)
 	{
 		foopath = ft_strjoin(curr_path, "/\0");
 		pathname = ft_strjoin(foopath, cmd);
+		ft_printf("Checking for :%s path: %s\n", cmd, pathname);
 		free(foopath);
 		if (access(pathname, X_OK) == 0)
 			break;
@@ -65,6 +66,7 @@ char	*parse_from_env(char *command, char *envp[])
 		return (NULL);
 	path = ft_substr(foo, 5, ft_strlen(foo) - 5);
 	splitted_path = ft_split(path, ':');
+	ft_printf("Splitted path for: %s\n", command);
 	pathname = search_from_env(command, splitted_path);
 	free(splitted_path);
 	free(path);
@@ -79,8 +81,9 @@ programhandl_t *parse_program(char *argv, char *envp[])
 	programhandl_t	*program = malloc(sizeof(programhandl_t));
 	program->argv = ft_split(argv, ' ');
 	/* Program path should be first element of program argv */
+	ft_printf("Argv0 of split argv: %s\n", argv);
 	program->path = parse_from_env(program->argv[0], envp);
-	
+	ft_printf("Found path: %s\n", program->path);
 	return (program);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jnaftana <jnaftana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 12:10:43 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/11/15 10:51:42 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/11/15 13:33:25 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int	open_inputf(char *path)
 	{
 		perror(strerror(errno));
 	}
-	ft_printf("Opening input %s at fd: %d\n", path, fd);
 	return (fd);
 }
 
@@ -35,6 +34,5 @@ int	open_outputf(char *path)
 		perror(strerror(errno));
 		perror("Unable to create file");
 	}
-	ft_printf("Opening output %s at fd: %d\n", path, fd);
 	return (fd);
 }
