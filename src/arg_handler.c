@@ -6,7 +6,7 @@
 /*   By: jnaftana <jnaftana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:23:43 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/11/15 13:41:26 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/11/16 10:45:51 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ char	*search_from_env(char *cmd, char **splitted_path)
 		if (access(pathname, X_OK) == 0)
 			break;
 		free(pathname);
+		pathname = NULL;
 		curr_path = *++splitted_path;
 	}
 	
@@ -76,7 +77,7 @@ char	*parse_from_env(char *command, char *envp[])
 /* 
  * Chops and parses program path and arguments
 */
-programhandl_t *parse_program(char *argv, char *envp[])
+programhandl_t	*parse_program(char *argv, char *envp[])
 {
 	programhandl_t	*program = malloc(sizeof(programhandl_t));
 	program->argv = ft_split(argv, ' ');
@@ -87,6 +88,8 @@ programhandl_t *parse_program(char *argv, char *envp[])
 	return (program);
 }
 
+// Check for good arguments. Fill pseudoglobal handler.
+
 int	parse_args(int argc, char* argv[], pipexhandler_t **p_handl, char *envp[])
 {
 	if (argc != 5)
@@ -96,7 +99,7 @@ int	parse_args(int argc, char* argv[], pipexhandler_t **p_handl, char *envp[])
 	}
 
 	// We are generating pipex handler here so we need to make it a dinamically assinged pointer in order to make it escape this function scope.
-	pipexhandler_t *pipexhandler = malloc(sizeof(pipexhandler_t));
+	pipexhandler_t	*pipexhandler = malloc(sizeof(pipexhandler_t));
 	if (pipexhandler == NULL)
 	{
 		// Probably print malloc malfuction.

@@ -6,7 +6,7 @@
 /*   By: jnaftana <jnaftana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:24:13 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/11/15 12:48:35 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/11/16 10:40:46 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ typedef struct programhandl_s
 */
 typedef struct pipexhandler_s
 {
-	char	*input_f;
-	char	*output_f;
+	char			*input_f;
+	char			*output_f;
 	programhandl_t	*program1;
 	programhandl_t	*program2;
 	

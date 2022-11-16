@@ -6,7 +6,7 @@
 /*   By: jnaftana <jnaftana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:24:01 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/11/15 13:20:59 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/11/16 10:47:27 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,35 +26,42 @@ void readfile(int fd)
 
 // Child 1
 // We dont need to handle heap from parent -> https://stackoverflow.com/questions/5429141/what-happens-to-malloced-memory-after-exec-changes-the-program-image
-// TODO check what happens when fd -1
 
+// We dont need to read from pipe
+// We dont need to read from std -> change stdin
+// Close dupe fd
+// Set output to input pipe -> close duplicated fd for pipe input;
+// If execve returns -> perror: command executed error
 int input_program(pipexhandler_t *pipexhandler, char *envp[], int *pipes)
 {
 	int in_fd;
 
-	close(pipes[0]);	// We dont need to read from pipe
+	close(pipes[0]);
 	in_fd = open_inputf(pipexhandler->input_f);	// We open the input file
 	if (in_fd < 0)
 	{
 		perror(pipexhandler->input_f);
 		return (-1);
 	}
-	close(STDIN_FILENO);	// We dont need to read from std
-	dup(in_fd);				// Now our stdin is the file
-	close(in_fd);			// Close dupe fd
-	close(STDOUT_FILENO);		// Set output to input pipe
+	close(STDIN_FILENO);
+	dup(in_fd);				
+	close(in_fd);			
+	close(STDOUT_FILENO);		
 	dup(pipes[1]);
-	close(pipes[1]);		// close duplicated fd for pipe input;
+	close(pipes[1]);		
 	execve(pipexhandler->program1->path, pipexhandler->program1->argv, envp);
-	perror(pipexhandler->program1->path);	// If execve returns -> perror: command executed error
+	perror(pipexhandler->program1->path);
 	return (0);
 }
 
+/*
+ * Same as input but we need to redirect input from pipe and output to outfile. 
+*/
 int output_program(pipexhandler_t *pipexhandler, char *envp[], int *pipes)
 {
 	int out_fd;
 
-	close(STDIN_FILENO);	// assign input to output of pipe
+	close(STDIN_FILENO);
 	dup(pipes[0]);
 	close(pipes[0]);
 	out_fd = open_outputf(pipexhandler->output_f);
@@ -63,7 +70,7 @@ int output_program(pipexhandler_t *pipexhandler, char *envp[], int *pipes)
 		perror(pipexhandler->output_f);
 		return (-1);
 	}
-	close(STDOUT_FILENO);	// Assign output to file output
+	close(STDOUT_FILENO);
 	dup(out_fd);
 	close(out_fd);
 	execve(pipexhandler->program2->path, pipexhandler->program2->argv, envp);
@@ -71,22 +78,31 @@ int output_program(pipexhandler_t *pipexhandler, char *envp[], int *pipes)
 	return (0);
 }
 
-void cleanup(pipexhandler_t *pipexhandler)
+/* If we have malloc'ed memory -> free it*/
+void	cleanup(pipexhandler_t *pipexhandler)
 {
-	free(pipexhandler->program1->path);
-	free(pipexhandler->program2->path);
-	free(pipexhandler->program1->argv);
-	free(pipexhandler->program2->argv);
+	if (pipexhandler->program1->path)
+		free(pipexhandler->program1->path);
+	if (pipexhandler->program2->path)
+		free(pipexhandler->program2->path);
+	if (pipexhandler->program1->argv)
+		free(pipexhandler->program1->argv);
+	if (pipexhandler->program2->argv)
+		free(pipexhandler->program2->argv);
 	free(pipexhandler->program1);
 	free(pipexhandler->program2);
 	free(pipexhandler);
 }
 
-int start_execution(pipexhandler_t *pipexhandler, char *envp[])
+
+/*
+ * Handles parent logic for forking and generating pipes.
+*/
+int	start_execution(pipexhandler_t *pipexhandler, char *envp[])
 {
-	pid_t pid;
-	int pipes[2];
-	int status;
+	pid_t	pid;
+	int		pipes[2];
+	int		status;
 	
 	if (pipe(pipes))
 	{
@@ -120,21 +136,20 @@ int start_execution(pipexhandler_t *pipexhandler, char *envp[])
 	return (0);
 }
 
-int main(int argc, char *argv[], char *envp[])
+// Pseudo global pipex handler
+// File descriptors for out-in files
+int	main(int argc, char *argv[], char *envp[])
 {
-	// Pseudo global pipex handler
-	// TODO: clean up pipexhandler heap.
-	pipexhandler_t *pipexhandler;
-	// File descriptors for out-in files
-	// Check for good arguments. Fill pseudoglobal handler.
+	
+	pipexhandler_t	*pipexhandler;
+	
 	if (parse_args(argc, argv, &pipexhandler, envp) < 0)
 	{
 		perror("Error while parsing arguments");
 		
 		if (pipexhandler == NULL)
 		{
-			// TODO: clean pipexhandler
-			// maybe print malloc error
+			ft_printf("FATAL ERROR: Error while generating pipexhandler\n");
 			return (-1);
 		}
 		return (-2);
