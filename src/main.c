@@ -6,23 +6,11 @@
 /*   By: jnaftana <jnaftana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:24:01 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/11/16 10:47:27 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/11/16 11:00:24 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-void readfile(int fd)
-{
-	char buff;
-	int a = 1;
-	while(a)
-	{
-		a = read(fd,&buff, 1);
-		ft_printf("%c", buff);
-	}
-}
-
 
 // Child 1
 // We dont need to handle heap from parent -> https://stackoverflow.com/questions/5429141/what-happens-to-malloced-memory-after-exec-changes-the-program-image
@@ -39,10 +27,7 @@ int input_program(pipexhandler_t *pipexhandler, char *envp[], int *pipes)
 	close(pipes[0]);
 	in_fd = open_inputf(pipexhandler->input_f);	// We open the input file
 	if (in_fd < 0)
-	{
-		perror(pipexhandler->input_f);
 		return (-1);
-	}
 	close(STDIN_FILENO);
 	dup(in_fd);				
 	close(in_fd);			
@@ -66,10 +51,7 @@ int output_program(pipexhandler_t *pipexhandler, char *envp[], int *pipes)
 	close(pipes[0]);
 	out_fd = open_outputf(pipexhandler->output_f);
 	if (out_fd < 0)
-	{
-		perror(pipexhandler->output_f);
 		return (-1);
-	}
 	close(STDOUT_FILENO);
 	dup(out_fd);
 	close(out_fd);
@@ -92,6 +74,7 @@ void	cleanup(pipexhandler_t *pipexhandler)
 	free(pipexhandler->program1);
 	free(pipexhandler->program2);
 	free(pipexhandler);
+
 }
 
 
@@ -113,6 +96,7 @@ int	start_execution(pipexhandler_t *pipexhandler, char *envp[])
 	if (pid == 0)	// If child
 	{
 		input_program(pipexhandler, envp, pipes);
+		return (127);
 	}
 	if (pid < 0)	// Parent
 	{
@@ -125,6 +109,7 @@ int	start_execution(pipexhandler_t *pipexhandler, char *envp[])
 	if (pid == 0)
 	{
 		output_program(pipexhandler, envp, pipes);
+		return (127);
 	}
 	if (pid < 0)	// Parent
 	{
@@ -154,7 +139,8 @@ int	main(int argc, char *argv[], char *envp[])
 		}
 		return (-2);
 	}
-	start_execution(pipexhandler, envp);
+	if (start_execution(pipexhandler, envp))
+		return (127);
 	cleanup(pipexhandler);
 	return (0);
 }
