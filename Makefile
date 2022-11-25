@@ -3,9 +3,10 @@ NAME = pipex
 COMPILER 	= clang
 FLAGS		= -Wall -Werror -Wextra
 LIBRARY		= -L./libs -lft -lftprintf
-SOURCE		= src/main.c src/arg_handler.c src/file_handler.c
+SOURCE		= src/main.c src/arg_handler.c src/file_handler.c src/program_handler.c
+LIBFTPATH	= libs/libft.a
 
-$(NAME): $(SOURCE)
+$(NAME): libs $(SOURCE)
 	$(COMPILER) $(FLAGS) $(SOURCE) $(LIBRARY) -o $(NAME)
 
 all: $(NAME)
@@ -19,8 +20,9 @@ re:
 libs: libft printf
 
 libft:
-	$(MAKE) -C ./libs/srclibs/42_libft 
-printf:
+	$(MAKE) -C ./libs/srclibs/42_libft
+	mv ./libs/srclibs/42_libft/libft.a ./libs/libft.a
+printf: 
 	$(MAKE) -C ./libs/srclibs/ft_printf 
 
 libftclean:

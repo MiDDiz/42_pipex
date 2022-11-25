@@ -6,7 +6,7 @@
 /*   By: jnaftana <jnaftana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:23:43 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/11/16 10:49:13 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/11/25 18:02:24 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,23 +33,21 @@ char	*search_from_env(char *cmd, char **splitted_path)
 		pathname = ft_strjoin(foopath, cmd);
 		free(foopath);
 		if (access(pathname, X_OK) == 0)
-			break;
+			break ;
 		free(pathname);
 		pathname = NULL;
 		curr_path = *++splitted_path;
 	}
-	
-
 	return (pathname);
 }
 
 /*
- * Gets PATH var from env, chops it and sends the command to be found and the treated PATH to fetch a command filepath
+ * Gets PATH var from env, chops it and sends the command to be found 
+ * and the treated PATH to fetch a command filepath
  * on success returns a command filepath
 */
 char	*parse_from_env(char *command, char *envp[])
 {
-	// Find Path
 	char	*foo;
 	char	*path;
 	char	**splitted_path;
@@ -59,10 +57,10 @@ char	*parse_from_env(char *command, char *envp[])
 	while (foo)
 	{
 		if (ft_strnstr(foo, "PATH=\0", 6))
-			break;
-		foo = *++envp;	// Go to next iteration
+			break ;
+		foo = *++envp;
 	}
-	if (foo == NULL)	// If not found
+	if (foo == NULL)
 		return (NULL);
 	path = ft_substr(foo, 5, ft_strlen(foo) - 5);
 	splitted_path = ft_split(path, ':');
@@ -75,41 +73,53 @@ char	*parse_from_env(char *command, char *envp[])
 /* 
  * Chops and parses program path and arguments
 */
-programhandl_t	*parse_program(char *argv, char *envp[])
+t_programhandl	*parse_program(char *argv, char *envp[])
 {
-	programhandl_t	*program = malloc(sizeof(programhandl_t));
+	t_programhandl	*program;
+
+	program = malloc(sizeof(t_pipexhandler));
 	program->argv = ft_split(argv, ' ');
-	/* Program path should be first element of program argv */
 	program->path = parse_from_env(program->argv[0], envp);
 	return (program);
 }
 
 // Check for good arguments. Fill pseudoglobal handler.
+// We are generating pipex handler here so we need to make it a dinamically 
+// assinged pointer in order to make it escape this function scope.
+// We chop down program info on helper function and return a programhandler
 
-int	parse_args(int argc, char* argv[], pipexhandler_t **p_handl, char *envp[])
+int	parse_args(int argc, char *argv[], t_pipexhandler **p_handl, char *envp[])
 {
-	if (argc != 5)
-	{
-		// Maybe print error
-		return (-1);
-	}
+	t_pipexhandler	*pipexhandler;
 
-	// We are generating pipex handler here so we need to make it a dinamically assinged pointer in order to make it escape this function scope.
-	pipexhandler_t	*pipexhandler = malloc(sizeof(pipexhandler_t));
+	if (argc != 5)
+		return (-1);
+	pipexhandler = malloc(sizeof(t_pipexhandler));
 	if (pipexhandler == NULL)
 	{
-		// Probably print malloc malfuction.
+		perror("Malloc error");
 		return (-1);
 	}
 	pipexhandler->input_f = argv[1];
 	pipexhandler->output_f = argv[4];
-	// We chop down program info on helper function and return a programhandler
 	pipexhandler->program1 = parse_program(argv[2], envp);
 	pipexhandler->program2 = parse_program(argv[3], envp);
-	/*
-		ft_printf("Program1 path: %s\n", pipexhandler->program1->argv[2]);
-	*/
-	// Asign curently generated handler to pseudoglobal handler. 
 	*p_handl = pipexhandler;
 	return (0);
+}
+
+/* If we have malloc'ed memory -> free it*/
+void	cleanup(t_pipexhandler *pipexhandler)
+{
+	if (pipexhandler->program1->path)
+		free(pipexhandler->program1->path);
+	if (pipexhandler->program2->path)
+		free(pipexhandler->program2->path);
+	if (pipexhandler->program1->argv)
+		free(pipexhandler->program1->argv);
+	if (pipexhandler->program2->argv)
+		free(pipexhandler->program2->argv);
+	free(pipexhandler->program1);
+	free(pipexhandler->program2);
+	free(pipexhandler);
 }
