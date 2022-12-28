@@ -6,7 +6,7 @@
 /*   By: jnaftana <jnaftana@student.42madrid.es>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:23:43 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/12/28 15:06:25 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/12/28 15:14:16 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,7 @@ char	*parse_from_env(char *command, char *envp[])
 	pathname = search_from_env(command, splitted_path);
 	i = 0;
 	while (splitted_path[i])
-	{
-		free(splitted_path[i]);
-		i++;
-	}
+		free(splitted_path[i++]);
 	free(splitted_path);
 	free(path);
 	return (pathname);
@@ -118,7 +115,7 @@ int	parse_args(int argc, char *argv[], t_pipexhandler **p_handl, char *envp[])
 /* If we have malloc'ed memory -> free it*/
 void	cleanup(t_pipexhandler *pipexhandler)
 {
-	int i;
+	int	i;
 
 	if (pipexhandler->program1->path)
 		free(pipexhandler->program1->path);
@@ -128,20 +125,14 @@ void	cleanup(t_pipexhandler *pipexhandler)
 	{
 		i = 0;
 		while (pipexhandler->program1->argv[i])
-		{
-			free(pipexhandler->program1->argv[i]);
-			i++;
-		}
+			free(pipexhandler->program1->argv[i++]);
 		free(pipexhandler->program1->argv);
 	}
 	if (pipexhandler->program2->argv)
 	{
 		i = 0;
 		while (pipexhandler->program2->argv[i])
-		{
-			free(pipexhandler->program2->argv[i]);
-			i++;
-		}
+			free(pipexhandler->program2->argv[i++]);
 		free(pipexhandler->program2->argv);
 	}
 	free(pipexhandler->program1);

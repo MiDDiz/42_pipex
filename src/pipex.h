@@ -6,7 +6,7 @@
 /*   By: jnaftana <jnaftana@student.42madrid.es>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:24:13 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/12/28 14:46:43 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/12/28 15:14:26 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 # include <stdio.h>
 # include <sys/types.h>
 # include <sys/wait.h>
-
 
 // Lib includes
 
