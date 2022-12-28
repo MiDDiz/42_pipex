@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   program_handler.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnaftana <jnaftana@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jnaftana <jnaftana@student.42madrid.es>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 17:34:10 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/11/25 18:14:00 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/12/28 14:56:45 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 int	input_program(t_pipexhandler *pipexhandler, char *envp[], int *pipes)
 {
 	int	in_fd;
-
+	
 	close(pipes[0]);
 	in_fd = open_inputf(pipexhandler->input_f);
 	if (in_fd < 0)
@@ -72,6 +72,7 @@ int	exec_first_child(t_pipexhandler *pipexhandler, char *envp[], int *pipes)
 int	output_program(t_pipexhandler *pipexhandler, char *envp[], int *pipes)
 {
 	int	out_fd;
+
 
 	close(STDIN_FILENO);
 	dup(pipes[0]);
