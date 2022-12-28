@@ -6,7 +6,7 @@
 /*   By: jnaftana <jnaftana@student.42madrid.es>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:23:43 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/12/28 15:14:16 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/12/28 23:27:59 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,12 +92,10 @@ t_programhandl	*parse_program(char *argv, char *envp[])
 // assinged pointer in order to make it escape this function scope.
 // We chop down program info on helper function and return a programhandler
 
-int	parse_args(int argc, char *argv[], t_pipexhandler **p_handl, char *envp[])
+int	parse_args(char *argv[], t_pipexhandler **p_handl, char *envp[])
 {
 	t_pipexhandler	*pipexhandler;
 
-	if (argc != 5)
-		return (-1);
 	pipexhandler = malloc(sizeof(t_pipexhandler));
 	if (pipexhandler == NULL)
 	{

@@ -6,7 +6,7 @@
 /*   By: jnaftana <jnaftana@student.42madrid.es>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:24:01 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/12/28 14:57:14 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/12/28 23:28:26 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,20 +41,26 @@ int	main(int argc, char *argv[], char *envp[])
 {
 	t_pipexhandler	*pipexhandler;
 
-	if (parse_args(argc, argv, &pipexhandler, envp) < 0)
+	if (argc != 5)
+	{
+		ft_printf("Unexpected argument count.\n");
+		ft_printf("Ussage: ./pipex f_in command1 command2 f_out\n");
+		return (0);
+	}
+	if (parse_args(argv, &pipexhandler, envp) < 0)
 	{
 		perror("Error while parsing arguments");
 		if (pipexhandler == NULL)
 		{
-			ft_printf("FATAL ERROR: Error while generating pipexhandler\n");
+			perror("Error while generating pipexhandler");
 			return (-1);
 		}
 		return (-2);
 	}
 	if (start_execution(pipexhandler, envp))
 	{
-		return (127);
 		cleanup(pipexhandler);
+		return (127);
 	}
 	cleanup(pipexhandler);
 	return (0);

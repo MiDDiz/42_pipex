@@ -6,7 +6,7 @@
 /*   By: jnaftana <jnaftana@student.42madrid.es>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:24:13 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/12/28 15:14:26 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/12/28 23:27:53 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int		exec_second_child(t_pipexhandler *ph, char *envp[], int *pipes);
 int		exec_first_child(t_pipexhandler *ph, char *envp[], int *pipes);
 
 /* Arg handler */
-int		parse_args(int argc, char *argv[], t_pipexhandler **ph, char *envp[]);
+int		parse_args(char *argv[], t_pipexhandler **ph, char *envp[]);
 void	cleanup(t_pipexhandler *pipexhandler);
 
 /*File handlers*/
