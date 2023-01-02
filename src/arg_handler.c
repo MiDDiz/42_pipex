@@ -6,7 +6,7 @@
 /*   By: jnaftana <jnaftana@student.42madrid.es>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:23:43 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/12/28 23:27:59 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/12/29 13:45:16 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,10 @@ t_programhandl	*parse_program(char *argv, char *envp[])
 
 	program = malloc(sizeof(t_pipexhandler));
 	program->argv = ft_split(argv, ' ');
-	program->path = parse_from_env(program->argv[0], envp);
+	if (access(program->argv[0], X_OK) == 0)
+		program->path = ft_strdup(program->argv[0]);
+	else
+		program->path = parse_from_env(program->argv[0], envp);
 	return (program);
 }
 
@@ -102,11 +105,15 @@ int	parse_args(char *argv[], t_pipexhandler **p_handl, char *envp[])
 		perror("Malloc error");
 		return (-1);
 	}
+	*p_handl = pipexhandler;
 	pipexhandler->input_f = argv[1];
 	pipexhandler->output_f = argv[4];
 	pipexhandler->program1 = parse_program(argv[2], envp);
 	pipexhandler->program2 = parse_program(argv[3], envp);
-	*p_handl = pipexhandler;
+	if (pipexhandler->program1->path == NULL)
+		ft_printf("%s: command not found\n", pipexhandler->program1->argv[0]);
+	if (pipexhandler->program2->path == NULL)
+		ft_printf("%s: command not found\n", pipexhandler->program2->argv[0]);
 	return (0);
 }
 

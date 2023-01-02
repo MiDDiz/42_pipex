@@ -6,7 +6,7 @@
 /*   By: jnaftana <jnaftana@student.42madrid.es>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 11:24:01 by jnaftana          #+#    #+#             */
-/*   Updated: 2022/12/28 23:28:26 by jnaftana         ###   ########.fr       */
+/*   Updated: 2022/12/29 13:40:57 by jnaftana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,8 @@ int	main(int argc, char *argv[], char *envp[])
 	{
 		perror("Error while parsing arguments");
 		if (pipexhandler == NULL)
-		{
-			perror("Error while generating pipexhandler");
 			return (-1);
-		}
+		cleanup(pipexhandler);
 		return (-2);
 	}
 	if (start_execution(pipexhandler, envp))
